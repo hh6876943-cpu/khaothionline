@@ -4,35 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Zenith Edu - Nền tảng Khảo thí & Ôn luyện Thông minh</title>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
-  import { getDatabase, ref, set, get, update, remove, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBOTCmSL77Ae9zt7qW2XPBmSYkM0Pmqrc",
-      authDomain: "khao-thi-online-a7f4e.firebaseapp.com",
-      projectId: "khao-thi-online-a7f4e",
-      storageBucket: "khao-thi-online-a7f4e.firebasestorage.app",
-      messagingSenderId: "445490126605",
-      appId: "1:445490126605:web:23b28c3ae24d5c95655a44",
-      measurementId: "G-NXHSKDWQPL"
-    };
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCyntsLDzADPb8dUHf4cHTvuKnHS37EBpc",
+  authDomain: "thikhsaosat.firebaseapp.com",
+  projectId: "thikhsaosat",
+  storageBucket: "thikhsaosat.firebasestorage.app",
+  messagingSenderId: "145863887479",
+  appId: "1:145863887479:web:440bcfc062bea75470d472",
+  measurementId: "G-T1NY136V9L"
+};
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-    const database = getDatabase(app);
-
-    // Đưa các hàm và biến database ra window để các thẻ script thường bên dưới gọi được
-    window.dbRef = ref;
-    window.dbSet = set;
-    window.dbGet = get;
-    window.dbUpdate = update;
-    window.dbRemove = remove;
-    window.dbOnValue = onValue;
-    window.database = database;
-  </script>
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
