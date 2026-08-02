@@ -4,36 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zenith Edu - Nền tảng Khảo thí & Ôn luyện Thông minh</title>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-analytics.js";
-    import { getDatabase, ref, set, get, update, remove, onValue } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-database.js";
     
-    const firebaseConfig = {
-      apiKey: "AIzaSyBOTCmsL77Ae9zt7qW2XBPmbSykM0Pmqrc",
-      authDomain: "khao-thi-online-a7f4e.firebaseapp.com",
-      databaseURL: "https://khao-thi-online-a7f4e-default-rtdb.firebaseio.com",
-      projectId: "khao-thi-online-a7f4e",
-      storageBucket: "khao-thi-online-a7f4e.firebasestorage.app",
-      messagingSenderId: "445490126605",
-      appId: "1:445490126605:web:23b28c3ae24d5c95655a44",
-      measurementId: "G-NXHSKDWQPL"
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-    const database = getDatabase(app);
-
-    // Đưa các hàm và biến database ra window để các thẻ script thường bên dưới gọi được
-    window.dbRef = ref;
-    window.dbSet = set;
-    window.dbGet = get;
-    window.dbUpdate = update;
-    window.dbRemove = remove;
-    window.dbOnValue = onValue;
-    window.database = database;
-  </script>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -48,8 +19,15 @@
             }
         }
     </script>
+    
     <!-- FontAwesome & Google Fonts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- THÊM FIREBASE CDN (Dùng bản Compat để không phá vỡ cấu trúc biến toàn cục của bạn) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-analytics-compat.js"></script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
         body { font-family: 'Quicksand', 'Be Vietnam Pro', sans-serif; letter-spacing: -0.01em; font-size: 1.1rem; }
@@ -67,9 +45,9 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col transition-colors duration-300 text-base">
     
-    <!-- ==================== MODAL THÔNG BÁO TRUNG TÂM ==================== -->
+    <!-- ==================== MODAL THÔNG BÁO ==================== -->
     <div id="customAlertModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/80 backdrop-blur-md hidden p-4">
-        <div class="glass-panel w-full max-w-sm p-6 rounded-3xl shadow-2xl relative border border-slate-700 bg-slate-900 text-center space-y-4">
+        <div class="glass-panel w-full max-w-sm p-6 rounded-3xl shadow-2xl relative border border-slate-700 bg-slate-900 text-center space-y-4 transform transition-all scale-100 animate-bounce-short">
             <div id="customAlertIcon" class="w-16 h-16 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-3xl mx-auto shadow-xl shadow-blue-600/40">
                 <i class="fa-solid fa-bell"></i>
             </div>
@@ -107,24 +85,17 @@
             </div>
         </header>
         <main class="relative z-10 max-w-7xl mx-auto px-6 py-16 text-center my-auto flex flex-col items-center">
-            <div class="inline-flex items-center space-x-2 px-5 py-2.5 rounded-full bg-blue-500/10 border border-blue-400/30 text-blue-300 text-sm font-semibold mb-6 backdrop-blur-md">
-                <i class="fa-solid fa-shield-halved text-blue-400"></i>
-                <span>Nền tảng khảo thí trực tuyến chống gian lận tiêu chuẩn quốc gia</span>
-            </div>
             <h1 class="text-5xl md:text-7xl font-extrabold text-white tracking-tight max-w-4xl mb-6 leading-tight">
                 Hệ thống Ngân hàng Đề thi & <span class="bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-400 bg-clip-text text-transparent">Ôn luyện chuyên sâu</span>
             </h1>
             <p class="text-lg md:text-xl text-slate-300 max-w-2xl mb-10 leading-relaxed">
-                Kho tài nguyên đề thi đồng bộ trực tuyến qua Firebase Realtime Database, phân quyền quản trị thông minh.
+                Kho tài nguyên đề thi Google Drive đồng bộ trực tuyến.
             </p>
             <button onclick="openLoginModal()" class="px-9 py-4.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold shadow-xl shadow-blue-600/50 hover:scale-105 transition flex items-center space-x-3 text-lg">
                 <span>Vào hệ thống ngay</span>
                 <i class="fa-solid fa-arrow-right"></i>
             </button>
         </main>
-        <footer class="relative z-10 max-w-7xl mx-auto w-full px-6 py-6 text-center text-slate-400 text-sm border-t border-white/10">
-            <p>&copy; 2026 Zenith Edu System. All rights reserved.</p>
-        </footer>
     </div>
 
     <!-- Modal Đăng nhập -->
@@ -132,25 +103,17 @@
         <div class="glass-panel w-full max-w-md p-8 rounded-3xl shadow-2xl relative border border-slate-700 bg-slate-900">
             <button onclick="closeLoginModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white text-2xl"><i class="fa-solid fa-xmark"></i></button>
             <div class="text-center mb-8">
-                <div class="w-18 h-18 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-3xl font-bold mx-auto mb-4 shadow-xl shadow-blue-600/40">
-                    <i class="fa-solid fa-lock-open"></i>
-                </div>
                 <h2 class="text-3xl font-extrabold text-white">Đăng nhập tài khoản</h2>
-                <p class="text-sm text-slate-400 mt-1">Nhập thông tin tài khoản của bạn</p>
             </div>
             <form onsubmit="handleLogin(event)" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-semibold text-slate-400 mb-1">Tên đăng nhập</label>
-                    <input type="text" id="usernameInput" placeholder="Nhập tài khoản..." required class="w-full px-4 py-3.5 rounded-xl bg-slate-950 border border-slate-800 focus:outline-none focus:border-blue-500 text-base text-white">
+                    <input type="text" id="usernameInput" placeholder="Nhập tài khoản (VD: admin)" required class="w-full px-4 py-3.5 rounded-xl bg-slate-950 border border-slate-800 focus:outline-none focus:border-blue-500 text-white">
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-slate-400 mb-1">Mật khẩu</label>
-                    <input type="password" id="passwordInput" placeholder="••••••••" required class="w-full px-4 py-3.5 rounded-xl bg-slate-950 border border-slate-800 focus:outline-none focus:border-blue-500 text-base text-white">
+                    <input type="password" id="passwordInput" placeholder="Mật khẩu (VD: 123456)" required class="w-full px-4 py-3.5 rounded-xl bg-slate-950 border border-slate-800 focus:outline-none focus:border-blue-500 text-white">
                 </div>
                 <div id="loginError" class="text-red-500 text-sm text-center hidden font-semibold">Sai tài khoản hoặc mật khẩu!</div>
-                <button type="submit" class="w-full py-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg shadow-blue-600/30 transition text-base">
-                    Vào hệ thống
-                </button>
+                <button type="submit" class="w-full py-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold transition text-base">Vào hệ thống</button>
             </form>
         </div>
     </div>
@@ -159,151 +122,184 @@
     <div id="dashboardScreen" class="min-h-screen flex bg-slate-950 text-slate-100 select-none w-full hidden">
         <aside class="w-80 bg-[#1d4ed8] flex flex-col border-r border-blue-700/50 shrink-0 text-white">
             <div class="h-24 px-6 flex items-center space-x-4 border-b border-blue-700/40">
-                <div class="w-12 h-12 rounded-2xl bg-white text-blue-700 flex items-center justify-center font-bold shadow-lg">
-                    <svg class="w-7 h-7 text-blue-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                    </svg>
-                </div>
-                <div>
-                    <span class="text-2xl font-bold tracking-wider">Zenith</span>
-                    <span class="block text-xs text-blue-200 font-semibold tracking-widest uppercase">Edu Learning</span>
-                </div>
+                <span class="text-2xl font-bold tracking-wider">Zenith Edu</span>
             </div>
-            <nav id="sidebarMenuNav" class="p-5 space-y-2 text-sm font-semibold flex-1 overflow-y-auto">
-                <!-- Render tự động qua JS -->
-            </nav>
+            <nav id="sidebarMenuNav" class="p-5 space-y-2 text-sm font-semibold flex-1 overflow-y-auto"></nav>
         </aside>
         
         <div class="flex-1 flex flex-col bg-slate-950 overflow-y-auto min-h-screen">
             <header class="h-24 bg-slate-900/80 backdrop-blur-md border-b border-slate-800 px-8 flex items-center justify-between sticky top-0 z-30 shadow-sm">
                 <div id="headerTitleArea">
-                    <h2 class="text-lg font-bold text-white"><i class="fa-solid fa-house-chimney text-blue-500 mr-2"></i> Tổng quan trang chủ</h2>
+                    <h2 class="text-lg font-bold text-white">Tổng quan trang chủ</h2>
                 </div>
                 <div class="flex items-center space-x-5">
-                    <button onclick="toggleDarkMode()" class="w-12 h-12 rounded-2xl bg-slate-800 hover:bg-slate-700 flex items-center justify-center transition shadow-sm text-yellow-400 text-lg">
-                        <i class="fa-solid fa-sun"></i>
-                    </button>
-                    <div onclick="switchTab('hosocanhan')" class="flex items-center space-x-4 pl-4 border-l border-slate-800 cursor-pointer hover:opacity-80 transition" title="Xem hồ sơ cá nhân">
-                        <div id="userAvatar" class="w-12 h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center font-bold text-base shadow-md">AD</div>
-                        <div class="hidden sm:block text-left">
-                            <span id="userNameDisplay" class="text-sm font-bold block text-white">Quản trị viên (Admin)</span>
-                            <span id="roleSubtitle" class="text-xs text-blue-400 block font-medium">Quản trị hệ thống</span>
-                        </div>
-                    </div>
-                    <button onclick="handleLogout()" class="w-12 h-12 rounded-xl bg-red-950/40 hover:bg-red-900 border border-red-900 text-red-400 flex items-center justify-center transition text-lg" title="Đăng xuất">
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                    </button>
+                    <button onclick="handleLogout()" class="px-4 py-2 rounded-xl bg-red-950/40 border border-red-900 text-red-400">Đăng xuất</button>
                 </div>
             </header>
             
-            <main id="mainViewContent" class="flex-1 p-8 max-w-7xl w-full mx-auto">
-                <!-- Nội dung hiển thị động -->
-            </main>
-            
-            <footer class="max-w-7xl mx-auto w-full px-8 py-6 text-center text-slate-500 text-sm border-t border-slate-800">
-                <p>&copy; 2026 Zenith Edu System. All rights reserved.</p>
-            </footer>
+            <main id="mainViewContent" class="flex-1 p-8 max-w-7xl w-full mx-auto"></main>
         </div>
     </div>
 
-    <!-- Các Modal phụ trợ (Thêm đề, Sửa môn, v.v.) -->
+    <!-- Modal Thêm/Sửa Môn Học -->
     <div id="subjectModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md hidden p-4">
-        <!-- Nội dung modal môn học -->
+        <div class="glass-panel w-full max-w-md p-8 rounded-3xl shadow-2xl relative border border-slate-700 bg-slate-900">
+            <button onclick="closeSubjectModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white text-2xl"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-2xl font-bold text-white mb-6">Thêm môn học mới</h3>
+            
+            <!-- FORM NÀY ĐÃ ĐƯỢC TÍCH HỢP FIREBASE (Xem logic JS bên dưới) -->
+            <form onsubmit="saveSubjectData(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-400 mb-1">Mã môn học (không dấu, viết liền)</label>
+                    <input type="text" id="subjectKeyInput" placeholder="VD: sinhhoc" required class="w-full px-4 py-3.5 rounded-2xl bg-slate-950 border border-slate-800 text-white">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-400 mb-1">Tên hiển thị môn học</label>
+                    <input type="text" id="subjectNameInput" placeholder="VD: Sinh học nâng cao" required class="w-full px-4 py-3.5 rounded-2xl bg-slate-950 border border-slate-800 text-white">
+                </div>
+                <button type="submit" class="w-full py-4 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-bold transition mt-4">
+                    Lưu môn học (Lên Firebase)
+                </button>
+            </form>
+        </div>
     </div>
 
     <!-- ==================== JAVASCRIPT LOGIC ==================== -->
     <script>
-        // Các biến cơ bản quản lý trạng thái ứng dụng
+        // ==========================================
+        // 1. KHỞI TẠO FIREBASE
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyBOTCmsL77Ae9zt7qW2XBPmbSykM0Pmqrc",
+            authDomain: "khao-thi-online-a7f4e.firebaseapp.com",
+            databaseURL: "https://khao-thi-online-a7f4e-default-rtdb.firebaseio.com",
+            projectId: "khao-thi-online-a7f4e",
+            storageBucket: "khao-thi-online-a7f4e.firebasestorage.app",
+            messagingSenderId: "445490126605",
+            appId: "1:445490126605:web:23b28c3ae24d5c95655a44",
+            measurementId: "G-NXHSKDWQPL"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const analytics = firebase.analytics();
+
+        // ==========================================
+        // 2. LOGIC ỨNG DỤNG (Mock Data)
+        // ==========================================
         let currentUser = null;
         let userRoleKey = 'student';
-        let sessionSeconds = 0;
 
+        let userProfiles = {
+            'admin': { name: 'Quản trị viên', username: 'admin', password: '123456', role: 'admin' },
+            'student': { name: 'Học sinh', username: 'hocsinh', password: '123456', role: 'student' }
+        };
+
+        // Các hàm giao diện cơ bản
         function showCustomAlert(title, message) {
             document.getElementById('customAlertTitle').innerText = title;
             document.getElementById('customAlertMessage').innerText = message;
             document.getElementById('customAlertModal').classList.remove('hidden');
         }
-        function closeCustomAlert() {
-            document.getElementById('customAlertModal').classList.add('hidden');
-        }
+        function closeCustomAlert() { document.getElementById('customAlertModal').classList.add('hidden'); }
+        
         function openLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); }
         function closeLoginModal() { document.getElementById('loginModal').classList.add('hidden'); }
+        function closeSubjectModal() { document.getElementById('subjectModal').classList.add('hidden'); }
 
         function handleLogin(e) {
             e.preventDefault();
             const user = document.getElementById('usernameInput').value.trim();
             const pass = document.getElementById('passwordInput').value;
             
-            // Ví dụ đăng nhập tĩnh kết hợp Firebase Realtime Database
-            if(user === "admin" && pass === "123456") {
-                userRoleKey = 'admin';
-                currentUser = { name: 'Quản trị viên (Admin)', username: 'admin', subtitle: 'Quản trị hệ thống', avatar: 'AD' };
+            if(userProfiles[user] && userProfiles[user].password === pass) {
+                currentUser = userProfiles[user];
+                userRoleKey = currentUser.role;
+                closeLoginModal();
+                document.getElementById('homeScreen').classList.add('hidden');
+                document.getElementById('dashboardScreen').classList.remove('hidden');
+                initDashboard();
             } else {
-                userRoleKey = 'student';
-                currentUser = { name: user, username: user, subtitle: 'Học sinh khóa học', avatar: user.substring(0,2).toUpperCase() };
+                document.getElementById('loginError').classList.remove('hidden');
             }
-
-            closeLoginModal();
-            document.getElementById('homeScreen').classList.add('hidden');
-            document.getElementById('dashboardScreen').classList.remove('hidden');
-            initDashboard();
         }
-
+        
         function handleLogout() {
             currentUser = null;
             document.getElementById('dashboardScreen').classList.add('hidden');
             document.getElementById('homeScreen').classList.remove('hidden');
         }
 
-        function toggleDarkMode() {
-            const html = document.documentElement;
-            if (html.classList.contains('dark')) {
-                html.classList.remove('dark');
-                html.classList.add('light');
-            } else {
-                html.classList.remove('light');
-                html.classList.add('dark');
-            }
-        }
-
         function initDashboard() {
-            document.getElementById('userNameDisplay').innerText = currentUser.name;
-            document.getElementById('roleSubtitle').innerText = currentUser.subtitle;
-            document.getElementById('userAvatar').innerText = currentUser.avatar;
             renderSidebarMenu();
             switchTab('trangchu');
         }
 
         function renderSidebarMenu() {
             let nav = document.getElementById('sidebarMenuNav');
-            nav.innerHTML = `
-                <a href="#" onclick="switchTab('trangchu')" id="menu-trangchu" class="flex items-center justify-between px-5 py-3.5 rounded-2xl bg-blue-800 text-white transition font-bold text-base">
-                    <div class="flex items-center space-x-3.5"><i class="fa-solid fa-house w-6"></i><span>Trang chủ</span></div>
-                </a>
-                <a href="#" onclick="switchTab('phongthi')" id="menu-phongthi" class="flex items-center justify-between px-5 py-3.5 rounded-2xl hover:bg-blue-700/60 text-blue-100 transition font-semibold text-base">
-                    <div class="flex items-center space-x-3.5"><i class="fa-solid fa-laptop-code w-6"></i><span>Phòng thi</span></div>
-                </a>
+            let isAdmin = currentUser && userRoleKey === 'admin';
+            let menuHTML = `
+                <a href="#" onclick="switchTab('trangchu')" id="menu-trangchu" class="flex items-center px-5 py-3.5 rounded-2xl hover:bg-blue-700/60 transition"><i class="fa-solid fa-house w-6"></i> Trang chủ</a>
             `;
+            if (isAdmin) {
+                menuHTML += `
+                <a href="#" onclick="document.getElementById('subjectModal').classList.remove('hidden')" class="flex items-center px-5 py-3.5 rounded-2xl hover:bg-blue-700/60 text-yellow-300 transition mt-4">
+                    <i class="fa-solid fa-plus w-6"></i> Thêm môn học mới
+                </a>`;
+            }
+            nav.innerHTML = menuHTML;
         }
 
         function switchTab(tabId) {
             let mainContainer = document.getElementById('mainViewContent');
             if (tabId === 'trangchu') {
-                mainContainer.innerHTML = `<div class="glass-panel p-8 rounded-3xl text-center"><h3 class="text-2xl font-bold text-white">Chào mừng đến với hệ thống kết nối Firebase Realtime Database!</h3></div>`;
-            } else if (tabId === 'phongthi') {
-                mainContainer.innerHTML = `<div class="glass-panel p-8 rounded-3xl text-center"><h3 class="text-2xl font-bold text-white">Danh sách phòng thi trực tuyến</h3></div>`;
+                mainContainer.innerHTML = `
+                    <div class="glass-panel p-8 rounded-3xl border border-slate-800 bg-slate-900 shadow-xl">
+                        <h3 class="text-3xl font-extrabold text-white mb-2">Xin chào, ${currentUser ? currentUser.name : ''}!</h3>
+                        <p class="text-slate-300">Chào mừng bạn đến với hệ thống. Chúc bạn một ngày học tập hiệu quả!</p>
+                        ${currentUser.role === 'admin' ? '<p class="text-yellow-400 mt-4 font-bold">Hãy thử click vào nút "Thêm môn học mới" bên trái để test chức năng lưu Firebase nhé!</p>' : ''}
+                    </div>
+                `;
             }
         }
 
-        // Ví dụ mẫu hàm lưu dữ liệu lên Firebase Realtime Database sử dụng window.database đã khởi tạo
-        function saveTestDataToFirebase(path, data) {
-            const dbRef = window.dbRef;
-            const dbSet = window.dbSet;
-            const database = window.database;
-            
-            dbSet(dbRef(database, path), data)
-                .then(() => { console.log("Lưu dữ liệu thành công!"); })
-                .catch((error) => { console.error("Lỗi khi lưu dữ liệu: ", error); });
+        // ==========================================
+        // 3. VÍ DỤ: LƯU DỮ LIỆU LÊN FIREBASE REALTIME DB
+        // ==========================================
+        function saveSubjectData(event) {
+            event.preventDefault(); // Ngăn form reload lại trang
+
+            // Lấy dữ liệu từ input
+            const subjectKey = document.getElementById('subjectKeyInput').value.trim().toLowerCase();
+            const subjectName = document.getElementById('subjectNameInput').value.trim();
+
+            if (!subjectKey || !subjectName) {
+                showCustomAlert("Lỗi", "Vui lòng nhập đầy đủ thông tin.");
+                return;
+            }
+
+            // Reference tới node 'subjects' trong Database
+            const subjectRef = database.ref('subjects/' + subjectKey);
+
+            // Ghi dữ liệu lên Firebase
+            subjectRef.set({
+                name: subjectName,
+                createdBy: currentUser.username,
+                createdAt: new Date().toISOString()
+            })
+            .then(() => {
+                showCustomAlert("Thành công", `Đã lưu môn học "${subjectName}" lên Firebase thành công!`);
+                
+                // Xóa form và đóng modal
+                document.getElementById('subjectKeyInput').value = '';
+                document.getElementById('subjectNameInput').value = '';
+                closeSubjectModal();
+            })
+            .catch((error) => {
+                showCustomAlert("Lỗi Firebase", "Không thể lưu dữ liệu: " + error.message);
+                console.error(error);
+            });
         }
     </script>
 </body>
