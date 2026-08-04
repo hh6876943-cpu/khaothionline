@@ -2210,5 +2210,51 @@
             showCustomAlert("Thành công", "Đã thêm tài khoản học sinh mới vào hệ thống!");
         }
     </script>
+    <!-- Tích hợp Firebase Firestore -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  // Thông số cấu hình của bạn
+  const firebaseConfig = {
+    apiKey: "AIzaSyDeqwhcNzopIkZ9Y5izrYOQsFvxWPCsxlQ",
+    authDomain: "luyen-thi-online-chinh.firebaseapp.com",
+    projectId: "luyen-thi-online-chinh",
+    storageBucket: "luyen-thi-online-chinh.firebasestorage.app",
+    messagingSenderId: "534355080658",
+    appId: "1:534355080658:web:5ec08244861646aad96f3",
+    measurementId: "G-DH7HS44C7Z"
+  };
+
+  // Khởi tạo ứng dụng Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Hàm lưu dữ liệu lên Firebase
+  window.luuDuLieuFirebase = async function(tenCollection, duLieu) {
+    try {
+      const docRef = await addDoc(collection(db, tenCollection), duLieu);
+      console.log("Đã lưu thành công vào " + tenCollection + " với ID: ", docRef.id);
+      return docRef.id;
+    } catch (e) {
+      console.error("Lỗi khi lưu dữ liệu lên Firebase: ", e);
+    }
+  };
+
+  // Hàm lấy dữ liệu từ Firebase
+  window.layDuLieuFirebase = async function(tenCollection) {
+    try {
+      const querySnapshot = await getDocs(collection(db, tenCollection));
+      let danhSach = [];
+      querySnapshot.forEach((doc) => {
+        danhSach.push({ id: doc.id, ...doc.data() });
+      });
+      return danhSach;
+    } catch (e) {
+      console.error("Lỗi khi lấy dữ liệu: ", e);
+      return [];
+    }
+  };
+</script>
 </body>
 </html>
