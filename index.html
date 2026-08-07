@@ -685,16 +685,21 @@
 <!-- ==================== JAVASCRIPT LOGIC ==================== -->
 <script>
     // 1. CẤU HÌNH FIREBASE (Thay bằng thông tin Project Firebase của bạn)
+// Cấu hình Firebase chuẩn
     const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-        databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_PROJECT_ID.appspot.com",
-        messagingSenderId: "YOUR_SENDER_ID",
-        appId: "YOUR_APP_ID"
+        apiKey: "AIzaSyDeqwhcNzopIkZ9Y5izrYOQsFvxWPCsxlQ",
+        authDomain: "luyen-thi-online-chinh.firebaseapp.com",
+        databaseURL: "https://luyen-thi-online-chinh-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "luyen-thi-online-chinh",
+        storageBucket: "luyen-thi-online-chinh.firebasestorage.app",
+        messagingSenderId: "534355088650",
+        appId: "1:534355088650:web:5ec002448616466aad96f3"
     };
-
+    
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
     // Khởi tạo Firebase
     if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
@@ -1021,7 +1026,6 @@
             renderAdminControlView(mainContainer);
         }
     }
-</script>
 // ==================== TRANG CHỦ (THIẾT KẾ THÊM NHIỀU MỤC ĐẸP VÀ BẮT MẮT) ====================
 function renderHomeView(container) {
     let today = new Date();
