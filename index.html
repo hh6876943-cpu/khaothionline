@@ -185,7 +185,61 @@
         </div>
     </div>
     <!-- Modal Thêm/Sửa Môn Học -->
-    <div id="subjectModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md hidden p-4">
+  // Hàm xử lý lưu Môn học lên Firebase
+function saveSubjectData(event) {
+    // 1. Ngăn chặn trang web bị reload lại khi submit form
+    event.preventDefault();
+
+    // 2. Lấy dữ liệu từ các input trong Modal
+    const keyInput = document.getElementById('subjectKeyInput').value.trim().toLowerCase();
+    const nameInput = document.getElementById('subjectNameInput').value.trim();
+    const oldKey = document.getElementById('editSubjectKey').value; // Dùng khi sửa
+
+    if (!keyInput || !nameInput) {
+        alert('Vui lòng điền đầy đủ thông tin!');
+        return;
+    }
+
+    // 3. Đẩy dữ liệu lên Firebase Realtime Database tại đường dẫn 'subjectNames/mã_môn'
+    database.ref('subjectNames/' + keyInput).set(nameInput)
+        .then(() => {
+            // Nếu là trường hợp đổi mã môn khi "Sửa", xóa mã môn cũ đi
+            if (oldKey && oldKey !== keyInput) {
+                database.ref('subjectNames/' + oldKey).remove();
+            }
+
+            // 4. Xóa trắng form & Đóng Modal
+            document.getElementById('subjectKeyInput').value = '';
+            document.getElementById('subjectNameInput').value = '';
+            document.getElementById('editSubjectKey').value = '';
+            
+            closeSubjectModal(); // Hàm đóng modal của bạn
+            
+            // Thông báo thành công (hoặc dùng showCustomAlert nếu bạn có)
+            alert('Đã lưu môn học thành công!');
+        })
+        .catch((error) => {
+            console.error("Lỗi khi lưu môn học:", error);
+            alert('Có lỗi xảy ra: ' + error.message);
+        });
+}
+// Hàm đóng Modal Môn học (nếu bạn chưa viết)
+function closeSubjectModal() {
+    const modal = document.getElementById('subjectModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+function openEditSubjectModal(key, name) {
+    document.getElementById('subjectModalTitle').innerText = 'Chỉnh sửa môn học';
+    document.getElementById('editSubjectKey').value = key;
+    document.getElementById('subjectKeyInput').value = key;
+    document.getElementById('subjectNameInput').value = name;
+    
+    // Hiển thị modal
+    document.getElementById('subjectModal').classList.remove('hidden');
+}
+  <div id="subjectModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md hidden p-4">
         <div class="glass-panel w-full max-w-md p-8 rounded-3xl shadow-2xl relative border border-slate-700 bg-slate-900">
             <button onclick="closeSubjectModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white text-2xl"><i class="fa-solid fa-xmark"></i></button>
             <h3 id="subjectModalTitle" class="text-2xl font-bold text-white mb-6">Thêm môn học mới</h3>
@@ -206,7 +260,14 @@
         </div>
     </div>
     <!-- Modal Thêm / Sửa Bài Thi -->
-    <div id="examModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md hidden p-4">
+  <form id="formExam" onsubmit="saveExamData(event)">
+    <input type="text" id="examTitleInput" placeholder="Tên bài kiểm tra..." required>
+    <input type="url" id="examLinkInput" placeholder="Link đề thi..." required>
+    <input type="text" id="examTimeInput" placeholder="Thời gian (ví dụ: 45 phút)">
+    <input type="number" id="examQCountInput" placeholder="Số câu hỏi">
+    <button type="submit">Tạo Đề Thi</button>
+</form>
+  <div id="examModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md hidden p-4">
         <div class="glass-panel w-full max-w-lg p-8 rounded-3xl shadow-2xl relative border border-slate-700 bg-slate-900">
             <button onclick="closeExamModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white text-2xl"><i class="fa-solid fa-xmark"></i></button>
             <h3 id="examModalTitle" class="text-2xl font-bold text-white mb-6">Thêm bài kiểm tra mới</h3>
@@ -236,7 +297,17 @@
             </form>
         </div>
     </div>
-    <!-- Modal Thêm/Sửa Lịch Thi -->
+<!-- Modal Thêm/Sửa Lịch Thi -->
+<form id="formSchedule" onsubmit="saveScheduleData(event)">
+    <input type="hidden" id="editScheduleId">
+    <input type="text" id="schDayOfWeek" placeholder="Thứ (ví dụ: Thứ Hai)">
+    <input type="text" id="schTime" placeholder="Giờ (ví dụ: 08:00)">
+    <input type="date" id="schDate">
+    <input type="text" id="schExamTitle" placeholder="Tên bài kiểm tra">
+    <input type="text" id="schSubject" placeholder="Môn học">
+    <input type="text" id="schRoom" placeholder="Phòng thi">
+    <button type="submit">Lưu Lịch Thi</button>
+</form>
     <div id="scheduleModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md hidden p-4">
         <div class="glass-panel w-full max-w-lg p-8 rounded-3xl shadow-2xl relative border border-slate-700 bg-slate-900">
             <button onclick="closeScheduleModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white text-2xl"><i class="fa-solid fa-xmark"></i></button>
@@ -285,7 +356,15 @@
             </form>
         </div>
     </div>
-    <!-- Modal Thêm/Sửa Tài Khoản Học Sinh -->
+<!-- Modal Thêm/Sửa Tài Khoản Học Sinh -->
+<form id="formStudentAccount" onsubmit="saveStudentAccountData(event)">
+    <input type="text" id="accUsername" placeholder="Tên đăng nhập" required>
+    <input type="text" id="accName" placeholder="Họ và tên" required>
+    <input type="password" id="accPassword" placeholder="Mật khẩu" required>
+    <input type="email" id="accEmail" placeholder="Email">
+    <input type="tel" id="accPhone" placeholder="Số điện thoại">
+    <button type="submit">Tạo Tài Khoản</button>
+</form>
     <div id="studentAccountModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md hidden p-4">
         <div class="glass-panel w-full max-w-md p-8 rounded-3xl shadow-2xl relative border border-slate-700 bg-slate-900">
             <button onclick="closeStudentAccountModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white text-2xl"><i class="fa-solid fa-xmark"></i></button>
@@ -641,7 +720,83 @@
         </div>
     </div>
     <!-- ==================== JAVASCRIPT LOGIC ==================== -->
-      <script>
+<script>
+// Hàm helper hỗ trợ đẩy dữ liệu lên Firebase
+function saveToFirebase(path, data) {
+    return database.ref(path).set(data);
+}
+
+function pushToFirebase(path, data) {
+    return database.ref(path).push(data);
+}
+
+function updateInFirebase(path, data) {
+    return database.ref(path).update(data);
+}
+
+function deleteFromFirebase(path) {
+    return database.ref(path).remove();
+}
+    // 1. Firebase Config
+    const firebaseConfig = { ... };
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+function syncAllModulesWithFirebase() { ... }
+    // 2. CHÈN HÀM DƯỚI ĐÂY
+    function syncAllModulesWithFirebase() {
+        // 1. Ngân hàng đề thi
+        database.ref('exams').on('value', (snapshot) => {
+            const data = snapshot.val();
+            examsList = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
+            if (typeof renderExamBank === 'function') renderExamBank();
+        });
+
+        // 2. Phòng thi
+        database.ref('examRooms').on('value', (snapshot) => {
+            const data = snapshot.val();
+            examRoomsList = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
+            if (typeof renderExamRooms === 'function') renderExamRooms();
+        });
+
+        // 3. Lịch thi
+        database.ref('schedules').on('value', (snapshot) => {
+            const data = snapshot.val();
+            schedulesList = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
+            if (typeof renderSchedules === 'function') renderSchedules();
+        });
+
+        // 4. Thống kê điểm số
+        database.ref('examSubmissions').on('value', (snapshot) => {
+            const data = snapshot.val();
+            examSubmissions = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
+            if (typeof renderStatistics === 'function') renderStatistics();
+        });
+
+        // 5. Sổ tay ghi chú
+        database.ref('studyNotes').on('value', (snapshot) => {
+            const data = snapshot.val();
+            studyNotesList = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
+            if (typeof renderNotes === 'function') renderNotes();
+        });
+
+        // 6. Gian hàng sách
+        database.ref('books').on('value', (snapshot) => {
+            const data = snapshot.val();
+            booksList = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })) : [];
+            if (typeof renderBookStore === 'function') renderBookStore();
+        });
+
+        // 7. Thông tin người dùng & Phân quyền Admin
+        if (currentUser && currentUser.id) {
+            database.ref('users/' + currentUser.id).on('value', (snapshot) => {
+                const userData = snapshot.val();
+                if (userData) {
+                    currentUser = { ...currentUser, ...userData };
+                    if (typeof updateUserProfileUI === 'function') updateUserProfileUI();
+                }
+            });
+        }
+    }
         // --- KHỞI TẠO FIREBASE CONFIG ---
         const firebaseConfig = {
             apiKey: "AIzaSyDeqwhcNzopIkZ9Y5izrYOQsFvxWPCsxlQ",
@@ -843,7 +998,10 @@ document.getElementById('userNameDisplay').innerText = currentUser.name;
             document.getElementById('roleSubtitle').innerText = currentUser.subtitle;
             document.getElementById('userAvatar').innerText = currentUser.avatar;
             renderSidebarMenu();
-            
+syncAllModulesWithFirebase();
+            // ⚡ GỌI HÀM NÀY TẠI ĐÂY ĐỂ BẮT ĐẦU ĐỒNG BỘ REALTIME
+    syncAllModulesWithFirebase();
+    switchTab('trangchu');
             // --- ĐỒNG BỘ DỮ LIỆU TỪ FIREBASE REALTIME ---
             // 1. Tải danh sách ghi chú
             database.ref('studyNotes').on('value', (snapshot) => {
